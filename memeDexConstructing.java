@@ -1,0 +1,340 @@
+import java.awt.Image;
+import java.io.*;
+import java.util.ArrayList;
+import javax.swing.*;
+
+class Meme
+{
+   String memeName;
+   String memeFileName;
+   String memeDescription;
+   
+   public Meme(String memN, String memFN, String memD)
+   {
+      memeName = memN;
+      memeFileName = memFN;
+      memeDescription = memD;
+   }
+   public Meme(Meme obj)
+   {
+      this(obj.memeName, obj.memeFileName, obj.memeDescription);
+   }
+}
+
+class MemeDexMain extends javax.swing.JFrame 
+{
+   ArrayList<Meme> memes = readInData("MemeList.txt");
+      
+   public static void insertionSort(ArrayList<Meme> myMemes)
+   {
+      for(int i = 1 ; i < myMemes.size() ; i++)
+      {
+         Meme toMove = myMemes.get(i);
+         int a;
+         for(a = i ; a > 0 && myMemes.get(a - 1).memeName.compareTo(toMove.memeName) > 0 ; a--)
+         {
+            myMemes.set(a, myMemes.get(a-1));         
+         }
+         myMemes.set(a, toMove);
+      }
+   }
+   
+   public static ArrayList<Meme>readInData(String fileName)
+   {  
+      ArrayList<Meme> memes = new ArrayList<>();
+      
+      try
+      {
+         System.getProperty("user.dir");
+         try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
+            String line;
+            while ((line = reader.readLine())!=null)
+            {
+               String[] data = line.split(",");            
+               Meme myMeme = new Meme(data[0],data[1],data[2]);
+               memes.add(myMeme);
+            }
+         }
+      }
+      catch ( IOException iox )
+      {
+         System.out.println("Problem reading " + fileName );
+      }
+      return memes;
+   }
+   
+   public static void writeFile (String[] letters)
+   {
+      String fileName = "MemeList.txt";
+      String line = "";
+   
+      try
+      {
+          try (BufferedWriter out = new BufferedWriter(new FileWriter(fileName, true))) {
+              for(int i = 0 ; i < letters.length ;)
+              {
+                  for (int j = 0 ; j < 3 && j < letters.length; j++, i++)
+                  {
+                      if(i != 2)
+                          line = line + letters[i].toUpperCase() + "," ;
+                      else
+                          line = line + letters[i].toUpperCase() + " " ;
+                  }
+                  
+                  out.newLine();
+                  out.write(line);
+                  line = "";
+              }}
+      }
+      catch (IOException e)
+      {
+         System.out.println("Problem writing to " + fileName );
+      }
+   }
+   
+   public void userAdding(String addItem1, String addItem2, String addItem3)
+   {
+      String[] addedItems = {addItem1, addItem2, addItem3};
+      writeFile(addedItems);
+   }
+
+    
+   public MemeDexMain() {
+      initComponents();
+   }
+    
+    
+   private void initComponents() 
+   {
+        
+      jPanelBackround = new javax.swing.JPanel();
+      lblTittle = new javax.swing.JLabel();
+      lblSearchMeme = new javax.swing.JLabel();
+      lblMemes = new javax.swing.JLabel();
+      jComboBox1 = new javax.swing.JComboBox<>();
+      btnNewMeme = new javax.swing.JButton();
+      lblNameofMeme = new javax.swing.JLabel();
+      lblMemeImage = new javax.swing.JLabel();
+      lblDescription = new javax.swing.JLabel();
+      txtNewMeme = new javax.swing.JTextField();
+      txtDescriptionInput = new javax.swing.JTextField();
+      txtFileInput = new javax.swing.JTextField();
+      insertionSort(memes);
+        
+      jComboBox1.setEditable(true);
+      setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+      setBackground(new java.awt.Color(0, 51, 153));
+   
+      jPanelBackround.setBackground(new java.awt.Color(0, 51, 153));
+   
+      lblTittle.setFont(new java.awt.Font("Segoe UI", 0, 36)); 
+      lblTittle.setForeground(new java.awt.Color(255, 255, 255));
+      lblTittle.setText("MemeDex");
+   
+      lblSearchMeme.setBackground(new java.awt.Color(153, 153, 153));
+      lblSearchMeme.setFont(new java.awt.Font("Segoe UI", 0, 18));
+      lblSearchMeme.setForeground(new java.awt.Color(255, 255, 255));
+      lblSearchMeme.setText("Search Memes Below");
+   
+      lblMemes.setFont(new java.awt.Font("Segoe UI", 0, 18)); 
+      lblMemes.setForeground(new java.awt.Color(255, 255, 255));
+      lblMemes.setText("Click Arrow for All Memes");
+      jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " "}));
+      for(int i = 0 ; i < memes.size() ; i++)
+         jComboBox1.addItem(memes.get(i).memeName);
+            
+      jComboBox1.addActionListener((java.awt.event.ActionEvent evt) -> {
+          jComboBox1ActionPerformed(evt);
+      });
+   
+      btnNewMeme.setBackground(new java.awt.Color(153, 153, 153));
+      btnNewMeme.setFont(new java.awt.Font("Segoe UI", 0, 14)); 
+      btnNewMeme.setForeground(new java.awt.Color(255, 255, 255));
+      btnNewMeme.setText("Add new meme");
+      btnNewMeme.addActionListener((java.awt.event.ActionEvent evt) -> {
+          btnNewMemeActionPerformed();
+      });
+   
+      lblNameofMeme.setFont(new java.awt.Font("Segoe UI", 0, 18));
+      lblNameofMeme.setForeground(new java.awt.Color(255, 255, 255));
+      lblNameofMeme.setText("Name Will Be Here");
+   
+      lblMemeImage.setIcon(new javax.swing.ImageIcon("Pictures/meme.png"));
+      lblMemeImage.setText("jLabel2");
+   
+      lblDescription.setFont(new java.awt.Font("Segoe UI", 0, 14));
+      lblDescription.setForeground(new java.awt.Color(255, 255, 255));
+      lblDescription.setText("<HTML>Description: Stuff will appear here</HTML>");
+   
+      txtNewMeme.setBackground(new java.awt.Color(153, 153, 153));
+      txtNewMeme.setFont(new java.awt.Font("Segoe UI", 0, 18));
+      txtNewMeme.setForeground(new java.awt.Color(255, 255, 255));
+      txtNewMeme.setText("Add Name");
+   
+      txtDescriptionInput.setBackground(new java.awt.Color(153, 153, 153));
+      txtDescriptionInput.setFont(new java.awt.Font("Segoe UI", 0, 18));
+      txtDescriptionInput.setForeground(new java.awt.Color(255, 255, 255));
+      txtDescriptionInput.setText("Enter Description");
+   
+      txtFileInput.setBackground(new java.awt.Color(153, 153, 153));
+      txtFileInput.setFont(new java.awt.Font("Segoe UI", 0, 18)); 
+      txtFileInput.setForeground(new java.awt.Color(255, 255, 255));
+      txtFileInput.setText("Enter Image file name");
+   
+      javax.swing.GroupLayout jPanelBackroundLayout = new javax.swing.GroupLayout(jPanelBackround);
+      jPanelBackround.setLayout(jPanelBackroundLayout);
+      jPanelBackroundLayout.setHorizontalGroup(
+            jPanelBackroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelBackroundLayout.createSequentialGroup()
+                .addGap(182, 182, 182)
+                .addComponent(lblTittle)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelBackroundLayout.createSequentialGroup()
+                .addGap(33, 33, 33)
+                .addGroup(jPanelBackroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblSearchMeme, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanelBackroundLayout.createSequentialGroup()
+                        .addGap(6, 6, 6)
+                        .addGroup(jPanelBackroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txtDescriptionInput)
+                            .addComponent(txtNewMeme)
+                            .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblMemes)
+                            .addComponent(btnNewMeme, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(txtFileInput))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanelBackroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblDescription, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblMemeImage, javax.swing.GroupLayout.PREFERRED_SIZE, 242, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblNameofMeme))
+                .addGap(15, 15, 15))
+         );
+      jPanelBackroundLayout.setVerticalGroup(
+            jPanelBackroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelBackroundLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(lblTittle)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanelBackroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblSearchMeme, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblNameofMeme))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanelBackroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanelBackroundLayout.createSequentialGroup()
+                        .addComponent(lblMemes)
+                        .addGap(18, 18, 18)
+                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(lblMemeImage, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanelBackroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanelBackroundLayout.createSequentialGroup()
+                        .addComponent(lblDescription, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(57, 57, 57))
+                    .addGroup(jPanelBackroundLayout.createSequentialGroup()
+                        .addComponent(txtNewMeme, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(txtDescriptionInput, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(txtFileInput, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnNewMeme, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())))
+         );
+   
+      javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+      getContentPane().setLayout(layout);
+      layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanelBackround, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+         );
+      layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanelBackround, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+         );
+   
+      pack();
+   }                      
+      
+    
+   private void btnNewMemeActionPerformed() {                                           
+   
+      String addMeme = txtNewMeme.getText();
+      String deskMeme = txtDescriptionInput.getText();
+      String imageMeme = txtFileInput.getText();
+      userAdding(addMeme, imageMeme, deskMeme);
+      
+      Meme newMeme = new Meme(addMeme,imageMeme,deskMeme);
+      memes.add(newMeme);
+      jComboBox1.addItem(addMeme);
+   }                                          
+
+   private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt)
+   {                                           
+      if(evt.getSource() == jComboBox1)
+      {
+         String selected = jComboBox1.getSelectedItem().toString();
+         lblNameofMeme.setText(selected);
+            
+         for(int i = 0 ; i < memes.size() ; i++)
+         {
+            if(selected.equals(memes.get(i).memeName))
+            {
+               lblDescription.setText("<HTML>"+memes.get(i).memeDescription+"<HTML>");
+               ImageIcon icon = new ImageIcon("Pictures/"+memes.get(i).memeFileName);
+               Image img = icon.getImage();
+               Image imgScale = img.getScaledInstance(lblMemeImage.getWidth(), lblMemeImage.getHeight(), Image.SCALE_SMOOTH);
+               ImageIcon scaledImage = new ImageIcon(imgScale);
+               lblMemeImage.setIcon(scaledImage);
+               break;
+            }
+            else if(i == memes.size()-1 && !selected.equals(memes.get(i).memeName) && !selected.equals(" "))
+            {
+               ctr++;
+               if (ctr%2 == 0)
+                  System.out.println("");
+               else
+                  JOptionPane.showMessageDialog(null,"It appears that meme doesn't exist. Try searching a different one \n(the search feature is case sensitive)");
+            }
+         }
+      
+      }
+   }
+
+                                        
+   public static void main(String args[]) 
+   {
+      try {
+         for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+            if ("Nimbus".equals(info.getName())) {
+               javax.swing.UIManager.setLookAndFeel(info.getClassName());
+               break;
+            }
+         }
+      } 
+      catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) 
+      {
+         java.util.logging.Logger.getLogger(MemeDexMain.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+      }
+   
+      java.awt.EventQueue.invokeLater
+      (() -> {
+          new MemeDexMain().setVisible(true);
+      });
+   }
+
+    // Variables declaration - do not modify                     
+   private javax.swing.JButton btnNewMeme;
+   private javax.swing.JComboBox<String> jComboBox1;
+   private javax.swing.JPanel jPanelBackround;
+   private javax.swing.JLabel lblDescription;
+   private javax.swing.JLabel lblMemeImage;
+   private javax.swing.JLabel lblMemes;
+   private javax.swing.JLabel lblNameofMeme;
+   private javax.swing.JLabel lblTittle;
+   private javax.swing.JTextField txtDescriptionInput;
+   private javax.swing.JTextField txtFileInput;
+   private javax.swing.JTextField txtNewMeme;
+   private javax.swing.JLabel lblSearchMeme; 
+   private int ctr = 0;               
+}
